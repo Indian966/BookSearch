@@ -46,9 +46,10 @@ public class Book implements Serializable {
 
             // 한글 Tag처리
             String orginalTitle = jsonObject.has("title") ? jsonObject.getString("title") : "";
-            String unEscapedXMLTitle = StringEscapeUtils.unescapeXml(orginalTitle);
-            String cleanXMLTitle = unEscapedXMLTitle.replaceAll("<[^>]+>", "");
-            Log.d("tag", "cleanXML :" + cleanXMLTitle);
+            //has메소드가 title을 가지고 있으면 getString으로 title을 가져와서 originalTitle에 집어넣음
+            String unEscapedXMLTitle = StringEscapeUtils.unescapeXml(orginalTitle); //xml포맷을 str포맷으로 바꿈
+            String cleanXMLTitle = unEscapedXMLTitle.replaceAll("<[^>]+>", ""); //특수문자 제거
+            Log.d("tag", "cleanXML :" + cleanXMLTitle); //로그로 남기기
 
             book.title = cleanXMLTitle;
             book.author = jsonObject.getString("authors");
