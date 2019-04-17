@@ -1,5 +1,6 @@
 package kr.ac.jbnu.se.stkim.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -7,8 +8,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 
 import kr.ac.jbnu.se.stkim.R;
 import kr.ac.jbnu.se.stkim.models.Book;
+import kr.ac.jbnu.se.stkim.net.AsyncHttpTask;
 import kr.ac.jbnu.se.stkim.net.BookClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
@@ -24,6 +29,9 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,7 +70,7 @@ public class BookDetailActivity extends ActionBarActivity {
         tvAuthor.setText(book.getAuthor());
         // fetch extra book data from books API
         client = new BookClient();
-
+requestLibraryBook(this);
 //        client.getExtraBookDetails(book.getOpenLibraryId(), new JsonHttpResponseHandler() {
 //            @Override
 //            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -151,4 +159,42 @@ public class BookDetailActivity extends ActionBarActivity {
         }
         return bmpUri;
     }
+
+
+
+    public void requestLibraryBook(Context cx) {
+
+//
+
+
+
+        new AsyncHttpTask(cx, "https://dl.jbnu.ac.kr/eds/brief/integrationResult?x=0&y=0&st=KWRD&si=TOTAL&lmtst=OR&lmt0=TOTAL&q=소공녀", mHandler, null,
+                null, null, 1, 0);
+    }
+
+
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            // IF Sucessfull no timeout
+
+
+            if (msg.what == 1) {
+
+                Log.d("ASDFASDF", msg.obj.toString());
+
+                Document doc = Jsoup.parseBodyFragment(msg.obj.toString());
+                Element body = doc.body();
+                Element btnK = doc.getElementsByClass("book_state").first();
+              //  String btnKValue = btnK.attr("value");
+
+                Log.d("ASDFASDFASDF", btnK.text());
+
+
+            }
+
+
+        }
+    };
+    
 }
