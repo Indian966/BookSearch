@@ -33,6 +33,7 @@ public class BookListActivity extends ActionBarActivity {
     private BookAdapter bookAdapter;
     private BookClient client;
     private ProgressBar progress;
+    private
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class BookListActivity extends ActionBarActivity {
         lvBooks.setAdapter(bookAdapter);
         progress = (ProgressBar) findViewById(R.id.progress);
         setupBookSelectedListener();
+
     }
 
     public void setupBookSelectedListener() {

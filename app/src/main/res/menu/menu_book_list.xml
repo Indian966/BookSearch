@@ -8,16 +8,5 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView" />
-    <item
-        android:id="@+id/action_play"
-        android:title="Play"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <item
-        android:id="@+id/btn_stop"
-        android:title="Stop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </menu>
