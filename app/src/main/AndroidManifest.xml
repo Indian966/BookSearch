@@ -11,21 +11,18 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <activity
-            android:name=".activities.MainMenuActivity"
-            android:label="MainMenu" >
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.BookListActivity"
             android:label="@string/app_name" >
         </activity>
-
         <activity
             android:name=".activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail" >
