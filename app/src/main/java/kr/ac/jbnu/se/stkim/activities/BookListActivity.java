@@ -3,6 +3,7 @@ package kr.ac.jbnu.se.stkim.activities;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
@@ -10,8 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 
 import kr.ac.jbnu.se.stkim.R;
@@ -36,9 +39,10 @@ public class BookListActivity extends ActionBarActivity {
     private ProgressBar progress;
 
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
         setContentView(R.layout.activity_book_list);
         lvBooks = (ListView) findViewById(R.id.lvBooks);
         ArrayList<Book> aBooks = new ArrayList<Book>();
@@ -49,7 +53,10 @@ public class BookListActivity extends ActionBarActivity {
         progress = (ProgressBar) findViewById(R.id.progress);
         setupBookSelectedListener();
 
+
     }
+
+
 
     public void setupBookSelectedListener() {
         lvBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
