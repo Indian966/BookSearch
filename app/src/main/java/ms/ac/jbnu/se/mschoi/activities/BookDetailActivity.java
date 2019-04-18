@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,6 +44,7 @@ public class BookDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvAuthor;
     private TextView tvPublisher;
+    private TextView tvDescription;
     private TextView tvPageCount;
     private BookClient client;
     private Button purchaseButton;
@@ -62,6 +64,7 @@ public class BookDetailActivity extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvAuthor = (TextView) findViewById(R.id.tvAuthor);
         tvPublisher = (TextView) findViewById(R.id.tvPublisher);
+        tvDescription = (TextView) findViewById(R.id.description_text);
         tvPageCount = (TextView) findViewById(R.id.tvPageCount);
         purchaseButton = (Button) findViewById(R.id.purchaseButton);
         bookMarkButton = (Button) findViewById(R.id.bookMarkButton);
@@ -116,19 +119,19 @@ public class BookDetailActivity extends AppCompatActivity {
             FileOutputStream fos = new FileOutputStream(file);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
             bw.write(title + "@@" + athor + "@@" + coverUrl + "@@" + openLibraryId);
-            Toast.makeText(getApplicationContext(), "즐겨찾기 추가되었습니다", 0).show();
+            Toast.makeText(getApplicationContext(), "즐겨찾기 추가되었습니다", Toast.LENGTH_SHORT).show();
             bw.close();
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "즐겨찾기 오류", 0).show();
+            Toast.makeText(getApplicationContext(), "즐겨찾기 오류", Toast.LENGTH_SHORT).show();
         }
         isBookMark = true;
     }
 
     private void removeBookMark() {
         file.delete();
-        Toast.makeText(getApplicationContext(), "즐겨찾기 삭제되었습니다", 0).show();
+        Toast.makeText(getApplicationContext(), "즐겨찾기 삭제되었습니다", Toast.LENGTH_SHORT).show();
         isBookMark = false;
     }
 
@@ -252,15 +255,16 @@ public class BookDetailActivity extends AppCompatActivity {
             if (msg.what == 1) {
 
                 Log.d("ASDFASDF", msg.obj.toString());
-
-                Document doc = Jsoup.parseBodyFragment(msg.obj.toString());
-                Element body = doc.body();
-                Element btnK = doc.getElementsByClass("book_state").first();
-                //  String btnKValue = btnK.attr("value");
-
-                Log.d("ASDFASDFASDF", btnK.text());
+try {
+    Document doc = Jsoup.parseBodyFragment(msg.obj.toString());
+    Element body = doc.body();
+    Element lib = doc.getElementsByClass("briefDeFont").first();
 
 
+    tvDescription.setText("전북대 도서관\n" + lib.text());
+} catch (Exception e){
+    tvDescription.setText("전북대 도서관\n" + "전북대 도서관에 없는 책");
+}
             }
 
 
