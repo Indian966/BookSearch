@@ -1,4 +1,4 @@
-package kr.ac.jbnu.se.stkim;
+package kr.ac.jbnu.se.mschoi;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package kr.ac.jbnu.se.stkim.activities;
+package ms.ac.jbnu.se.mschoi.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import kr.ac.jbnu.se.stkim.R;
-import kr.ac.jbnu.se.stkim.adapters.BookAdapter;
-import kr.ac.jbnu.se.stkim.models.Book;
-import kr.ac.jbnu.se.stkim.net.BookClient;
+import ms.ac.jbnu.se.mschoi.R;
+import ms.ac.jbnu.se.mschoi.adapters.BookAdapter;
+import ms.ac.jbnu.se.mschoi.models.Book;
+import ms.ac.jbnu.se.mschoi.net.BookClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;

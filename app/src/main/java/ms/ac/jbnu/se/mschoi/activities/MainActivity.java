@@ -1,6 +1,5 @@
-package kr.ac.jbnu.se.stkim.activities;
+package ms.ac.jbnu.se.mschoi.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -9,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 
-import kr.ac.jbnu.se.stkim.R;
+import ms.ac.jbnu.se.mschoi.R;
 
 public class MainActivity extends Activity {
     private MediaPlayer mp;

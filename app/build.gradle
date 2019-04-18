@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "kr.ac.jbnu.se.stkim"
+        applicationId "ms.ac.jbnu.se.mschoi"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1

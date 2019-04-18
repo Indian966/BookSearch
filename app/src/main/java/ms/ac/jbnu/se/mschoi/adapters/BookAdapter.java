@@ -1,4 +1,4 @@
-package kr.ac.jbnu.se.stkim.adapters;
+package ms.ac.jbnu.se.mschoi.adapters;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,8 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import kr.ac.jbnu.se.stkim.R;
-import kr.ac.jbnu.se.stkim.models.Book;
+import ms.ac.jbnu.se.mschoi.R;
+import ms.ac.jbnu.se.mschoi.models.Book;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

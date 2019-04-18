@@ -1,6 +1,5 @@
-package kr.ac.jbnu.se.stkim.models;
+package ms.ac.jbnu.se.mschoi.models;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringEscapeUtils;

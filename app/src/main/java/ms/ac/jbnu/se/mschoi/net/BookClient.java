@@ -1,4 +1,4 @@
-package kr.ac.jbnu.se.stkim.net;
+package ms.ac.jbnu.se.mschoi.net;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;

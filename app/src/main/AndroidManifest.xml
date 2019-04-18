@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.ac.jbnu.se.stkim" >
+    package="ms.ac.jbnu.se.mschoi" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -11,8 +11,9 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <activity
-            android:name=".activities.MainActivity"
+            android:name="ms.ac.jbnu.se.mschoi.activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,15 +21,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.BookListActivity"
+            android:name="ms.ac.jbnu.se.mschoi.activities.BookListActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".activities.BookDetailActivity"
+            android:name="ms.ac.jbnu.se.mschoi.activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail" >
         </activity>
         <activity
-            android:name=".activities.FavoriteBookActivity"
+            android:name="ms.ac.jbnu.se.mschoi.activities.FavoriteBookActivity"
             android:label="@string/title_activity_favorite_book" >
         </activity>
     </application>
