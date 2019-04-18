@@ -27,6 +27,10 @@
             android:name=".activities.BookDetailActivity"
             android:label="@string/title_activity_book_detail" >
         </activity>
+        <activity
+            android:name=".activities.FavoriteBookActivity"
+            android:label="@string/title_activity_favorite_book" >
+        </activity>
     </application>
 
 </manifest>

@@ -62,6 +62,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/bookMarkButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="즐겨찾기"/>
+
+            <Button
+                android:id="@+id/purchaseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도서구매" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -2,7 +2,6 @@ package kr.ac.jbnu.se.stkim.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -14,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import kr.ac.jbnu.se.stkim.R;
+import kr.ac.jbnu.se.stkim.adapters.BookAdapter;
+import kr.ac.jbnu.se.stkim.models.Book;
+import kr.ac.jbnu.se.stkim.net.BookClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -23,11 +26,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import kr.ac.jbnu.se.stkim.R;
-import kr.ac.jbnu.se.stkim.adapters.BookAdapter;
-import kr.ac.jbnu.se.stkim.models.Book;
-import kr.ac.jbnu.se.stkim.net.BookClient;
-
 
 public class BookListActivity extends AppCompatActivity {
     public static final String BOOK_DETAIL_KEY = "book";
@@ -36,11 +34,16 @@ public class BookListActivity extends AppCompatActivity {
     private BookClient client;
     private ProgressBar progress;
 
+    private ListView lvMain;
+    private boolean isLoading = false;
+    private int mCurrentPage = 0; // 현재 페이지 번호
+    private int mTotalPage = 0; // 전체 페이지 번호
+    private int mItemCount= 15; // 화면에 보여줄 항목 수
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_list);
         lvBooks = (ListView) findViewById(R.id.lvBooks);
         ArrayList<Book> aBooks = new ArrayList<Book>();
@@ -50,11 +53,7 @@ public class BookListActivity extends AppCompatActivity {
         lvBooks.setAdapter(bookAdapter);
         progress = (ProgressBar) findViewById(R.id.progress);
         setupBookSelectedListener();
-
-
     }
-
-
 
     public void setupBookSelectedListener() {
         lvBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {

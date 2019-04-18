@@ -1,6 +1,5 @@
 package kr.ac.jbnu.se.stkim.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,26 +7,33 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import kr.ac.jbnu.se.stkim.R;
 import kr.ac.jbnu.se.stkim.models.Book;
-import kr.ac.jbnu.se.stkim.net.AsyncHttpTask;
 import kr.ac.jbnu.se.stkim.net.BookClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class BookDetailActivity extends AppCompatActivity {
     private ImageView ivBookCover;
@@ -36,6 +42,13 @@ public class BookDetailActivity extends AppCompatActivity {
     private TextView tvPublisher;
     private TextView tvPageCount;
     private BookClient client;
+    private Button purchaseButton;
+    private Button bookMarkButton;
+    private Button favoriteBookButton;
+    private Boolean isBookMark = false;
+    private File file;
+    private Book favoriteBook;
+    private String filename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +60,73 @@ public class BookDetailActivity extends AppCompatActivity {
         tvAuthor = (TextView) findViewById(R.id.tvAuthor);
         tvPublisher = (TextView) findViewById(R.id.tvPublisher);
         tvPageCount = (TextView) findViewById(R.id.tvPageCount);
+        purchaseButton = (Button)findViewById(R.id.purchaseButton);
+        bookMarkButton = (Button)findViewById(R.id.bookMarkButton);
+
         // Use the book to populate the data into our views
         Book book = (Book) getIntent().getSerializableExtra(BookListActivity.BOOK_DETAIL_KEY);
         loadBook(book);
+        checkBookMark(book);
+
+        purchaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.aladin.co.kr/m/msearch.aspx?SearchWord="+tvTitle.getText().toString()+"&SearchTarget=All"));
+                startActivity(intent);
+            }
+        });
+
+        bookMarkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isBookMark)
+                    removeBookMark();
+                else
+                    addBookMark();
+            }
+        });
+
     }
+
+    private void checkBookMark(Book book){
+        favoriteBook = book;
+        filename = book.getTitle();
+        String path = getFilesDir().getAbsolutePath()+"/"+filename+".txt";
+        file = new File(path);
+        FileInputStream fins;
+        try {
+            fins = new FileInputStream(path);
+            isBookMark = true;
+            fins.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            isBookMark = false;
+        }
+    }
+    private void addBookMark(){
+        String title = favoriteBook.getTitle();
+        String athor = favoriteBook.getAuthor();
+        String coverUrl = favoriteBook.getCoverUrl();
+        String openLibraryId = favoriteBook.getOpenLibraryId();
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+            bw.write(title+"@@"+athor+"@@"+coverUrl+"@@"+openLibraryId);
+            Toast.makeText(getApplicationContext(),"즐겨찾기 추가되었습니다",0).show();
+            bw.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"즐겨찾기 오류",0).show();
+        }
+        isBookMark = true;
+    }
+    private void removeBookMark(){
+        file.delete();
+        Toast.makeText(getApplicationContext(),"즐겨찾기 삭제되었습니다",0).show();
+        isBookMark = false;
+    }
+
 
     // Populate data for the book
     private void loadBook(Book book) {
@@ -62,7 +138,7 @@ public class BookDetailActivity extends AppCompatActivity {
         tvAuthor.setText(book.getAuthor());
         // fetch extra book data from books API
         client = new BookClient();
-//        requestLibraryBook(this);
+
 //        client.getExtraBookDetails(book.getOpenLibraryId(), new JsonHttpResponseHandler() {
 //            @Override
 //            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -151,42 +227,4 @@ public class BookDetailActivity extends AppCompatActivity {
         }
         return bmpUri;
     }
-
-
-
-//    public void requestLibraryBook(Context cx) {
-//
-////
-//
-//
-//
-//        new AsyncHttpTask(cx, "https://dl.jbnu.ac.kr/eds/brief/integrationResult?x=0&y=0&st=KWRD&si=TOTAL&lmtst=OR&lmt0=TOTAL&q=소공녀", mHandler, null,
-//                null, null, 1, 0);
-//    }
-//
-//
-//
-//    public Handler mHandler = new Handler() {
-//        public void handleMessage(Message msg) {
-//            // IF Sucessfull no timeout
-//
-//
-//            if (msg.what == 1) {
-//
-//                Log.d("ASDFASDF", msg.obj.toString());
-//
-//                Document doc = Jsoup.parseBodyFragment(msg.obj.toString());
-//                Element body = doc.body();
-//                Element btnK = doc.getElementsByClass("book_state").first();
-//              //  String btnKValue = btnK.attr("value");
-//
-//                Log.d("ASDFASDFASDF", btnK.text());
-//
-//
-//            }
-//
-//
-//        }
-//    };
-    
 }
