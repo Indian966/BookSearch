@@ -1,26 +1,19 @@
 package kr.ac.jbnu.se.stkim.activities;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 
-import kr.ac.jbnu.se.stkim.R;
-import kr.ac.jbnu.se.stkim.adapters.BookAdapter;
-import kr.ac.jbnu.se.stkim.models.Book;
-import kr.ac.jbnu.se.stkim.net.BookClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -30,8 +23,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import kr.ac.jbnu.se.stkim.R;
+import kr.ac.jbnu.se.stkim.adapters.BookAdapter;
+import kr.ac.jbnu.se.stkim.models.Book;
+import kr.ac.jbnu.se.stkim.net.BookClient;
 
-public class BookListActivity extends ActionBarActivity {
+
+public class BookListActivity extends AppCompatActivity {
     public static final String BOOK_DETAIL_KEY = "book";
     private ListView lvBooks;
     private BookAdapter bookAdapter;
