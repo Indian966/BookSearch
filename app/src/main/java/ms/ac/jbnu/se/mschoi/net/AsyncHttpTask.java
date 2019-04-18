@@ -117,7 +117,8 @@ public class AsyncHttpTask extends AsyncTask<String, Void, String> {
 			// Check it is null
 			if (paramNames != null && paramValues != null) {
                 //Public value
-
+paramNames.add("api_key");
+paramValues.add("xT3FP4AuctM");
 
 				for (int i = 0; i < paramNames.size(); i++) {
 				//	Log.i("value", paramNames.get(i).toString());
