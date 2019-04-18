@@ -1,5 +1,6 @@
 package ms.ac.jbnu.se.mschoi.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -7,7 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import ms.ac.jbnu.se.mschoi.R;
 import ms.ac.jbnu.se.mschoi.models.Book;
+import ms.ac.jbnu.se.mschoi.net.AsyncHttpTask;
 import ms.ac.jbnu.se.mschoi.net.BookClient;
 
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +32,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.w3c.dom.Text;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,6 +50,7 @@ public class BookDetailActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvAuthor;
     private TextView tvPublisher;
+    private TextView tvDescription;
     private TextView tvPageCount;
     private BookClient client;
     private Button purchaseButton;
@@ -68,6 +79,7 @@ public class BookDetailActivity extends AppCompatActivity {
         tvTitle = (TextView) findViewById(R.id.tvTitle);
         tvAuthor = (TextView) findViewById(R.id.tvAuthor);
         tvPublisher = (TextView) findViewById(R.id.tvPublisher);
+        tvDescription = (TextView) findViewById(R.id.description_text);
         tvPageCount = (TextView) findViewById(R.id.tvPageCount);
         purchaseButton = (Button)findViewById(R.id.purchaseButton);
         bookMarkButton = (Button)findViewById(R.id.bookMarkButton);
@@ -135,6 +147,10 @@ public class BookDetailActivity extends AppCompatActivity {
         });
 
 
+        purchaseButton = (Button) findViewById(R.id.purchaseButton);
+        bookMarkButton = (Button) findViewById(R.id.bookMarkButton);
+
+
         dislikebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +184,7 @@ public class BookDetailActivity extends AppCompatActivity {
         purchaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.aladin.co.kr/m/msearch.aspx?SearchWord="+tvTitle.getText().toString()+"&SearchTarget=All"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.aladin.co.kr/m/msearch.aspx?SearchWord=" + tvTitle.getText().toString() + "&SearchTarget=All"));
                 startActivity(intent);
             }
         });
@@ -176,7 +192,7 @@ public class BookDetailActivity extends AppCompatActivity {
         bookMarkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isBookMark)
+                if (isBookMark)
                     removeBookMark();
                 else
                     addBookMark();
@@ -185,10 +201,10 @@ public class BookDetailActivity extends AppCompatActivity {
 
     }
 
-    private void checkBookMark(Book book){
+    private void checkBookMark(Book book) {
         favoriteBook = book;
         filename = book.getTitle();
-        String path = getFilesDir().getAbsolutePath()+"/"+filename+".txt";
+        String path = getFilesDir().getAbsolutePath() + "/" + filename + ".txt";
         file = new File(path);
         FileInputStream fins;
         try {
@@ -200,7 +216,8 @@ public class BookDetailActivity extends AppCompatActivity {
             isBookMark = false;
         }
     }
-    private void addBookMark(){
+
+    private void addBookMark() {
         String title = favoriteBook.getTitle();
         String athor = favoriteBook.getAuthor();
         String coverUrl = favoriteBook.getCoverUrl();
@@ -208,19 +225,20 @@ public class BookDetailActivity extends AppCompatActivity {
         try {
             FileOutputStream fos = new FileOutputStream(file);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-            bw.write(title+"@@"+athor+"@@"+coverUrl+"@@"+openLibraryId);
-            Toast.makeText(getApplicationContext(),"즐겨찾기 추가되었습니다",0).show();
+            bw.write(title + "@@" + athor + "@@" + coverUrl + "@@" + openLibraryId);
+            Toast.makeText(getApplicationContext(), "즐겨찾기 추가되었습니다", Toast.LENGTH_SHORT).show();
             bw.close();
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),"즐겨찾기 오류",0).show();
+            Toast.makeText(getApplicationContext(), "즐겨찾기 오류", Toast.LENGTH_SHORT).show();
         }
         isBookMark = true;
     }
-    private void removeBookMark(){
+
+    private void removeBookMark() {
         file.delete();
-        Toast.makeText(getApplicationContext(),"즐겨찾기 삭제되었습니다",0).show();
+        Toast.makeText(getApplicationContext(), "즐겨찾기 삭제되었습니다", Toast.LENGTH_SHORT).show();
         isBookMark = false;
     }
 
@@ -235,7 +253,7 @@ public class BookDetailActivity extends AppCompatActivity {
         tvAuthor.setText(book.getAuthor());
         // fetch extra book data from books API
         client = new BookClient();
-
+        requestLibraryBook(this, book.getTitle());
 //        client.getExtraBookDetails(book.getOpenLibraryId(), new JsonHttpResponseHandler() {
 //            @Override
 //            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -284,7 +302,7 @@ public class BookDetailActivity extends AppCompatActivity {
 
     private void setShareIntent() {
         ImageView ivImage = (ImageView) findViewById(R.id.ivBookCover);
-        final TextView tvTitle = (TextView)findViewById(R.id.tvTitle);
+        final TextView tvTitle = (TextView) findViewById(R.id.tvTitle);
         // Get access to the URI for the bitmap
         Uri bmpUri = getLocalBitmapUri(ivImage);
         // Construct a ShareIntent with link to image
@@ -292,7 +310,7 @@ public class BookDetailActivity extends AppCompatActivity {
         // Construct a ShareIntent with link to image
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("*/*");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, (String)tvTitle.getText());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, (String) tvTitle.getText());
         shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
         // Launch share menu
         startActivity(Intent.createChooser(shareIntent, "Share Image"));
@@ -304,7 +322,7 @@ public class BookDetailActivity extends AppCompatActivity {
         // Extract Bitmap from ImageView drawable
         Drawable drawable = imageView.getDrawable();
         Bitmap bmp = null;
-        if (drawable instanceof BitmapDrawable){
+        if (drawable instanceof BitmapDrawable) {
             bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         } else {
             return null;
@@ -312,7 +330,7 @@ public class BookDetailActivity extends AppCompatActivity {
         // Store image to default external storage directory
         Uri bmpUri = null;
         try {
-            File file =  new File(Environment.getExternalStoragePublicDirectory(
+            File file = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS), "share_image_" + System.currentTimeMillis() + ".png");
             file.getParentFile().mkdirs();
             FileOutputStream out = new FileOutputStream(file);
@@ -324,4 +342,41 @@ public class BookDetailActivity extends AppCompatActivity {
         }
         return bmpUri;
     }
+
+
+    public void requestLibraryBook(Context cx, String title) {
+
+//
+
+
+        new AsyncHttpTask(cx, "https://dl.jbnu.ac.kr/eds/brief/integrationResult?x=0&y=0&st=KWRD&si=TOTAL&lmtst=OR&lmt0=TOTAL&q=" + title, mHandler, null,
+                null, null, 1, 0);
+    }
+
+
+    public Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            // IF Sucessfull no timeout
+
+
+            if (msg.what == 1) {
+
+                Log.d("ASDFASDF", msg.obj.toString());
+try {
+    Document doc = Jsoup.parseBodyFragment(msg.obj.toString());
+    Element body = doc.body();
+    Element lib = doc.getElementsByClass("briefDeFont").first();
+
+
+    tvDescription.setText("전북대 도서관\n" + lib.text());
+} catch (Exception e){
+    tvDescription.setText("전북대 도서관\n" + "전북대 도서관에 없는 책");
+}
+            }
+
+
+        }
+    };
+
+
 }
