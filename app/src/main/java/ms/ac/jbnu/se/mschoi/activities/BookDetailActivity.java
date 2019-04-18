@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,11 @@ import ms.ac.jbnu.se.mschoi.R;
 import ms.ac.jbnu.se.mschoi.models.Book;
 import ms.ac.jbnu.se.mschoi.net.BookClient;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedWriter;
@@ -43,6 +49,15 @@ public class BookDetailActivity extends AppCompatActivity {
     private File file;
     private Book favoriteBook;
     private String filename;
+    private Button likebutton;
+    private Button dislikebutton;
+    private EditText likeText;
+    private EditText dislikeText;
+    DatabaseReference myRef;
+
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = firebaseDatabase.getReference();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +71,95 @@ public class BookDetailActivity extends AppCompatActivity {
         tvPageCount = (TextView) findViewById(R.id.tvPageCount);
         purchaseButton = (Button)findViewById(R.id.purchaseButton);
         bookMarkButton = (Button)findViewById(R.id.bookMarkButton);
+        likeText = (EditText) findViewById(R.id.likeText);
+        likebutton = (Button) findViewById(R.id.likebutton);
+        dislikeText = (EditText) findViewById(R.id.dislikeText);
+        dislikebutton = (Button) findViewById(R.id.dislikebutton);
 
+
+        myRef= FirebaseDatabase.getInstance().getReference().child("msg");
+        myRef=FirebaseDatabase.getInstance().getReference().child("dislike");
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long numberOfLike = (Long) dataSnapshot.getValue();
+                likeText.setText(String.valueOf(numberOfLike));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long numberOfdisLike = (Long) dataSnapshot.getValue();
+                dislikeText.setText(String.valueOf(numberOfdisLike));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        likebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+
+
+                myRef = FirebaseDatabase.getInstance().getReference().child("msg");
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long numberOfLike = (Long) dataSnapshot.getValue();
+                        numberOfLike++;
+                        myRef.setValue(numberOfLike);
+                        likeText.setText(String.valueOf(numberOfLike));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+
+        dislikebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+
+
+                myRef = FirebaseDatabase.getInstance().getReference().child("dislike");
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long numberOfdisLike = (Long) dataSnapshot.getValue();
+                        numberOfdisLike++;
+                        myRef.setValue(numberOfdisLike);
+                        dislikeText.setText(String.valueOf(numberOfdisLike));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
         // Use the book to populate the data into our views
         Book book = (Book) getIntent().getSerializableExtra(BookListActivity.BOOK_DETAIL_KEY);
         loadBook(book);

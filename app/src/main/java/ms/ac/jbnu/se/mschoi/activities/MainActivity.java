@@ -18,6 +18,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        Button reserveButton = (Button) findViewById(R.id.reserveButton);
+
+        reserveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent welcomeIntent = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(welcomeIntent);
+            }
+        });
         favoriteBookButton =(Button)findViewById(R.id.favoriteBookButton);
         favoriteBookButton.setOnClickListener(new View.OnClickListener() {
             @Override

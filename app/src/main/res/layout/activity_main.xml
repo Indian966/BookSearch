@@ -24,4 +24,9 @@
         android:layout_height="wrap_content"
         android:text="관심도서확인" />
 
+    <Button
+        android:id="@+id/reserveButton"
+        android:layout_width="292dp"
+        android:layout_height="wrap_content"
+        android:text="로그인" />
 </LinearLayout>
